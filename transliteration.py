@@ -25,11 +25,13 @@
 # t -> ת
 
 
-
+# Function that takes as input a word entered by a user and 
+# outputs a word in the transliterated form computers can accept
 def convertToMachineTransliteration(word):
-
     new_word = ""
     skip = False
+    if_statment_fixer = True
+    
     for i in range(len(word)):
         
         if word[i] == "s":
@@ -94,3 +96,26 @@ def convertToMachineTransliteration(word):
         
         elif word[i] == "r":
             new_word += "r"
+
+        elif word[i] == "o":
+            new_word += "w"
+        
+        elif word[i] == "i":
+            if_statment_fixer = True
+        
+        elif word[i] == "a":
+            if i == 0:
+                new_word += "a"
+        
+        elif word[i] == "e":
+            if_statment_fixer = True
+        
+        else:
+            new_word += word[i]
+    
+    return new_word
+
+while(True):
+    word = input("Enter your Hebrew word: ")
+    print("\nYou entered: " + word)
+    print("This was converted to: " + convertToMachineTransliteration(word))
