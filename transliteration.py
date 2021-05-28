@@ -1,5 +1,7 @@
+# Authors: Eitan Vilker and Kai Frey (eitan.e.vilker.21@dartmouth.edu and kai.m.frey.22@dartmouth.edu)
+# Usage: Simply run with python transliteration.py and enter Romanized Hebrew words when prompted
 
-# Transliterated Hebrew to Hebrew rules
+# Machine-transliterated Hebrew to Hebrew rules, for ease of reference
 # a -> א
 # b -> ב
 # g -> ג
