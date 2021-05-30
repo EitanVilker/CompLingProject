@@ -1,6 +1,10 @@
-George
-Fred
-Harry
-Hairy
-Ron
-Hermione
+George 1
+Rom 0
+Fred 3
+Harry 17
+Hairy 5
+Rob 3
+Roy 4
+Ron 2
+Ro 1
+Hermione 6

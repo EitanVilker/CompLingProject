@@ -1,17 +1,19 @@
 # Authors: Eitan Vilker and Kai Frey (eitan.e.vilker.21@dartmouth.edu and kai.m.frey.22@dartmouth.edu)
 # Usage: Simply run with python edit_distance and enter input when prompted
 
+from fastDamerauLevenshtein import *
+
 # Function to create a list of tuples of words and frequencies based on a corpus
 # Said list is sorted in descending order by the frequencies
 def createOrderedWordFrequencyList(file):
-
     freqList = []
-
     file = open(file, "r")
     for line in file:
+        line = line.split()
         freqList.append([line[0], line[1]])
     
-    freqList = sorted(freqList, key=itemgetter(1))
+    freqList = sorted(freqList, key=lambda item: (item[1]), reverse=True)
+    print(freqList)
     file.close()
 
     return freqList
@@ -24,13 +26,14 @@ def getClosestWord(word, freqList):
     editDistance = 0
     
     for i in range(len(freqList)):
-        editDistance = damerauLevenshtein(word,freqList[i][0])
+        current = freqList[i][0]
+        editDistance = damerauLevenshtein(word,current, False)
         if editDistance < currentBestDistance:
             currentBestDistance = editDistance
-            currentBestWord = word
+            currentBestWord = current
             if currentBestDistance == 0:
                 break
-    
+            
     return currentBestWord
 
 
