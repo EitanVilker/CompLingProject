@@ -37,9 +37,10 @@ def convertToMachineTransliteration(word):
     for i in range(len(word)):
         
         if word[i] == "s":
-            if i < len(word) and word[i + 1] == "h":
-                new_word += "e"
-                skip = True
+            if i < len(word) - 1:
+                if word[i + 1] == "h":
+                    new_word += "e"
+                    skip = True
             else:
                 new_word += "s"
         
@@ -117,7 +118,7 @@ def convertToMachineTransliteration(word):
     
     return new_word
 
-while(True):
-    word = input("Enter your Hebrew word: ")
-    print("\nYou entered: " + word)
-    print("This was converted to: " + convertToMachineTransliteration(word))
+# while(True):
+#     word = input("Enter your Hebrew word: ")
+#     print("\nYou entered: " + word)
+#     print("This was converted to: " + convertToMachineTransliteration(word))
