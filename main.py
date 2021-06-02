@@ -11,7 +11,8 @@ def createOrderedWordFrequencyList(file):
     file = open(file, "r", encoding='utf8')
     for line in file:
         line = line.split(",")
-        freqList.append([line[2], line[1]])
+        if int(line[1]) != 1: # only add if it occurs more than once
+            freqList.append([line[2].strip('\n'), int(line[1])])
 
     freqList = sorted(freqList, key=lambda item: (item[1]), reverse=True)
     file.close()
@@ -31,7 +32,8 @@ while(True):
     print("של")
     word = input("Enter your Hebrew word: ")
     print("\nYou entered: " + word)
-    print("This was converted to: " + edit_distance.getClosestWord(word, freqList))
+    a, b = edit_distance.getClosestWord(word.strip(), freqList)
+    print("This was converted to: " + a + " with edit distance " + str(b))
     
     #if (translating):
     #    print("This means: " + )

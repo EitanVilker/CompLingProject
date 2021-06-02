@@ -2,7 +2,8 @@
 # Usage: pip install fastDamerauLevenshtein
 # Simply run with python edit_distance and enter input when prompted
 
-from fastDamerauLevenshtein import *
+from fastDamerauLevenshtein import damerauLevenshtein
+import sys
 
 # # Function to create a list of tuples of words and frequencies based on a corpus
 # # Said list is sorted in descending order by the frequencies
@@ -23,19 +24,19 @@ from fastDamerauLevenshtein import *
 def getClosestWord(word, freqList):
 
     currentBestWord = ""
-    currentBestDistance = 9999
+    currentBestDistance = sys.maxsize
     editDistance = 0
     
     for i in range(len(freqList)):
         current = freqList[i][0]
-        editDistance = damerauLevenshtein(word,current, False)
+        editDistance = damerauLevenshtein(word,current, similarity=False)
         if editDistance < currentBestDistance:
             currentBestDistance = editDistance
             currentBestWord = current
-            if currentBestDistance == 0:
+            if currentBestDistance == 0: # this is the same word, no need to look further
                 break
             
-    return currentBestWord
+    return currentBestWord, currentBestDistance
 
 
 # freqList = createOrderedWordFrequencyList("dummy_file.txt")
