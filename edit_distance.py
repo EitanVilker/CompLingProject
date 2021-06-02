@@ -1,5 +1,6 @@
 # Authors: Eitan Vilker and Kai Frey (eitan.e.vilker.21@dartmouth.edu and kai.m.frey.22@dartmouth.edu)
-# Usage: Simply run with python edit_distance and enter input when prompted
+# Usage: pip install fastDamerauLevenshtein
+# Simply run with python edit_distance and enter input when prompted
 
 from fastDamerauLevenshtein import *
 

@@ -26,7 +26,8 @@ with open('ted_hebrew.txt', 'r') as txt_file:
   # write csv
   with open('occurrences.csv', 'w') as csv_file:
     writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['id', 'frequency', 'word'])
+    writer.writerow(['id', 'freq', 'word'])
+
     for word, freq in word_dict.items():
-      writer.writerow([w_id, word, freq])
+      writer.writerow([w_id, freq, word.strip()])
       w_id += 1

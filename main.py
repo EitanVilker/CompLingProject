@@ -19,7 +19,7 @@ def createOrderedWordFrequencyList(file):
 
 def createWordMeaningDict(file):
     file = file.open()
-    wordMeaningDict = {}
+    freqDict = {}
     for line in file:
         line = line.split(",")
         freqDict[line[1]] = line[2]
