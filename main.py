@@ -28,12 +28,11 @@ def createWordMeaningDict(file):
 freqList = createOrderedWordFrequencyList("occurrences.csv")
 
 while(True):
-    print("Printing shel: ")
-    print("של")
     word = input("Enter your Hebrew word: ")
     print("\nYou entered: " + word)
-    a, b = edit_distance.getClosestWord(word.strip(), freqList)
-    print("This was converted to: " + a + " with edit distance " + str(b))
+    wordsList = edit_distance.getClosestWords(word.strip(), freqList)
+    print("The best word is " + wordsList[0][0] + ", which means " + hebrewToEnglish(wordsList[0][0]))
+    print("Other possibilities include: ")
     
-    #if (translating):
-    #    print("This means: " + )
+    for i in range(9):
+        print(wordsList[i + 1] + translation.hebrewToEnglish(wordsList[i + 1][0]))

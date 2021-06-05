@@ -21,22 +21,46 @@ import sys
 #     return freqList
 
 # Function to get the closest word based on its frequency and its edit distance
-def getClosestWord(word, freqList):
+def getClosestWords(word, freqList):
 
-    currentBestWord = ""
     currentBestDistance = sys.maxsize
+    lastWordDistance = sys.maxsize
+    wordsList = []
     editDistance = 0
     
     for i in range(len(freqList)):
         current = freqList[i][0]
         editDistance = damerauLevenshtein(word,current, similarity=False)
+        
+        # Check if word is the best one and should go at front of list
         if editDistance < currentBestDistance:
             currentBestDistance = editDistance
-            currentBestWord = current
+            wordsList.insert(0, [current, editDistance])
+            if len(wordsList) > 10:
+                wordsList.pop(10)
             if currentBestDistance == 0: # this is the same word, no need to look further
                 break
+        
+        # Put word in appropriate place in list if not best word
+        elif editDistance < lastWordDistance:
+            for i in range(len(wordsList)):
+                if wordsList[i][1] > editDistance:
+                    wordsList.insert(i, [current, editDistance])
+                    if len(wordsList) > 10:
+                        wordsList.pop(10)
+        
+        # If list has less than ten entries, add word to appropriate spot in list
+        elif len(wordsList) < 10:
+            wordInserted = False
+            for i in range(len(wordsList)):
+                if wordsList[i][1] > editDistance:
+                    wordsList.insert(i, [current, editDistance])
+                    wordInserted = True
+            if wordInserted == False:
+                wordsList.append([current, editDistance])
+                lastWordDistance = editDistance
             
-    return currentBestWord, currentBestDistance
+    return wordsList
 
 
 # freqList = createOrderedWordFrequencyList("dummy_file.txt")

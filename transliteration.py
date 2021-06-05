@@ -104,19 +104,30 @@ def convertToMachineTransliteration(word):
             new_word += "w"
         
         elif word[i] == "i":
-            if_statment_fixer = True
+            if i == 0:
+                new_word += "y"
+            elif i == len(word) - 1:
+                new_word += "i"
         
         elif word[i] == "a":
             if i == 0:
                 new_word += "a"
+            elif i == len(word) - 1:
+                new_word += "h"
         
         elif word[i] == "e":
-            if_statment_fixer = True
+            if i == 0:
+                new_word += "a"
+                
+            elif i == len(word) - 1:
+                new_word += "h"
         
         else:
             new_word += word[i]
     
     return new_word
+
+
 
 # while(True):
 #     word = input("Enter your Hebrew word: ")
