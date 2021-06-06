@@ -2,8 +2,58 @@
 # Usage: pip install fastDamerauLevenshtein
 # Simply run with python edit_distance and enter input when prompted
 
+# Geeks For Geeks edit distance code used as inspiration
+# https://www.geeksforgeeks.org/edit-distance-dp-5/
+
 from fastDamerauLevenshtein import damerauLevenshtein
 import sys
+
+def customEditDistance(word1, word2, length1, length2, editDistanceTable):
+
+    if length1 == 0:
+        return length2
+    if length2 == 0:
+        return length1
+
+    if editDistanceTable[n][m] != -1:
+        return editDistanceTable[n][m]
+    
+    # If letters are equal
+    if word1[length1 - 1] == word2[length2 - 1]:
+        if editDistanceTable[length1 - 1][length2 - 1] == -1:
+            editDistanceTable[length1][length2] = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable)
+            return editDistanceTable[length1][length2]
+        
+        editDistanceTable[length1][length2] = editDistanceTable[length1 - 1][length2 - 1]
+        return editDistanceTable[length1][length2]
+    
+    # If letters aren't equal, find cost of insertion, deletion, and replacement
+    
+    costInsertion = 0
+    costDeletion = 0
+    costReplacement = 0
+
+    # Deletion
+    if editDistanceTable[length1 - 1][length2] != -1:
+        costDeletion = editDistanceTable[length1 - 1][length2]
+    else:
+        costDeletion = customEditDistance(word1, word2, length1 - 1, length2, editDistanceTable)
+
+    # Insertion
+    if editDistanceTable[length1][length2 - 1] != -1:
+        costInsertion = editDistanceTable[length1][length2 - 1]
+    else:
+        costInsertion = customEditDistance(word1, word2, length1, length2 - 1, editDistanceTable)
+
+    # Replacement
+    if editDistanceTable[length1 - 1][length2 - 1] != -1:
+        costReplacement = editDistanceTable[length1 - 1][length2 - 1]
+    else:
+        costReplacement = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable)
+
+    editDistanceTable[length1][length2] = 1 + min(costDeletion, min(costInsertion, costReplacement))
+    
+    return editDistanceTable[length1][length2]
 
 # # Function to create a list of tuples of words and frequencies based on a corpus
 # # Said list is sorted in descending order by the frequencies
@@ -56,12 +106,14 @@ def getClosestWords(word, freqList):
                 if wordsList[i][1] > editDistance:
                     wordsList.insert(i, [current, editDistance])
                     wordInserted = True
+                    break
             if wordInserted == False:
                 wordsList.append([current, editDistance])
                 lastWordDistance = editDistance
             
     return wordsList
 
+print(damerauLevenshtein("Hello", "Hello", similarity=False))
 
 # freqList = createOrderedWordFrequencyList("dummy_file.txt")
 # while(True):

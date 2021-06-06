@@ -21,6 +21,7 @@
 # y -> ע 
 # p -> פ
 # p (final) -> ף
+# c -> צ
 # q -> ק
 # r -> ר
 # e -> ש
@@ -118,7 +119,7 @@ def convertToMachineTransliteration(word):
         elif word[i] == "e":
             if i == 0:
                 new_word += "a"
-                
+
             elif i == len(word) - 1:
                 new_word += "h"
         
