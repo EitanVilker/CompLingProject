@@ -26,13 +26,18 @@ def createWordMeaningDict(file):
         line = line.split(",")
         freqDict[line[1]] = line[2]
 
-def run(word):
-    print("\nYou entered: " + word)
+def run(rom_word):
+    print("\nYou entered: " + rom_word)
+    word = transliteration.convertToMachineTransliteration(rom_word)
+    print(word)
     wordsList = edit_distance.getClosestWords(word.strip(), freqList)
-    print("The best word is " + wordsList[0][0] + ", which means " + hebrewToEnglish(wordsList[0][0]))
+    print(wordsList)
+    print("The best word is " + wordsList[0][0] )
+    # + ", which means " + hebrewToEnglish(wordsList[0][0]))
     print("Other possibilities include: ")
-    for i in range(9):
-        print(wordsList[i + 1] + translation.hebrewToEnglish(wordsList[i + 1][0]))
+    for i in range(len(wordsList)-1):
+        print(wordsList[i + 1] )
+        # + translation.hebrewToEnglish(wordsList[i + 1][0]))
 
 def collectAccuracies(outputFile):
     

@@ -5,6 +5,7 @@
 import csv
 
 transliteration = {} 
+final_chars = ['c', 'k', 'm', 'n', 'p']
 
 with open("hebrewToTransliterated.csv", 'r') as corpus:
   reader = csv.reader(corpus)
@@ -25,9 +26,8 @@ with open("hebrewToTransliterated.csv", 'r') as corpus:
               continue
             # special case for final forms
             # if end of the word, make input as n_, p_, k_, c_, m_. Else n, p, k, c, m
-            if (char == 'n' or char == 'p' or char == 'k' or char == 'c' or char == 'm'):
-              if i == len(rom_word)-1:
-                char = rom_word[i] + '_'
+            if char in final_chars and i == len(rom_word)-1:
+              char = rom_word[i] + '_'
 
             if char not in transliteration.keys():  
               transliteration[char] = {heb_char : 1}

@@ -81,6 +81,9 @@ def getClosestWords(word, freqList):
     for i in range(len(freqList)):
         current = freqList[i][0]
         editDistance = damerauLevenshtein(word,current, similarity=False)
+
+        if editDistance < 5:
+            print(word,current)
         
         # Check if word is the best one and should go at front of list
         if editDistance < currentBestDistance:
@@ -88,8 +91,6 @@ def getClosestWords(word, freqList):
             wordsList.insert(0, [current, editDistance])
             if len(wordsList) > 10:
                 wordsList.pop(10)
-            if currentBestDistance == 0: # this is the same word, no need to look further
-                break
         
         # Put word in appropriate place in list if not best word
         elif editDistance < lastWordDistance:
