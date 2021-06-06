@@ -51,4 +51,6 @@ def runNormal():
 
 freqList = createOrderedWordFrequencyList("occurrences.csv")
 
-runNormal()
+# runNormal()
+
+collectAccuracies("outputFile.csv")
