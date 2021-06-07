@@ -7,7 +7,7 @@ import csv
 transliteration = {} 
 final_chars = ['c', 'k', 'm', 'n', 'p']
 
-with open("hebrewToTransliterated.csv", 'r') as corpus:
+with open("hebrewToTransliterated.csv", 'r', encoding="utf8") as corpus:
   reader = csv.reader(corpus)
   line_count = 0
   for row in reader:
