@@ -65,7 +65,7 @@ def collectAccuracies(outputFile):
         if wasTheWordInList == "q":
             file.close()
             break
-        file.write(word + "," + wasTheFirstWordRight + "," + wasTheWordInList)
+        file.write(word + "," + wasTheFirstWordRight + "," + wasTheWordInList + "\n")
 
 def runNormal():
     while(True):
