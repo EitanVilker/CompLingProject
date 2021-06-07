@@ -51,6 +51,8 @@ for key in transliteration:
 transliteration['p_'].pop('פ')
 transliteration['m_'].pop('מ')
 
-
-print(transliteration)
-          
+# convert the transliteration dictionaries to one dictionary
+letter_dict = {}
+for item in transliteration:
+  for nested in transliteration[item]:
+    letter_dict[item] = nested

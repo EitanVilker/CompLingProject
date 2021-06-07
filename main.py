@@ -3,6 +3,7 @@
 
 import transliteration
 import edit_distance
+import roman_to_hebrew
 
 # Function to create a list of tuples of words and frequencies based on a corpus
 # Said list is sorted in descending order by the frequencies
@@ -26,12 +27,20 @@ def createWordMeaningDict(file):
         line = line.split(",")
         freqDict[line[1]] = line[2]
 
+def transliterate_word(word):
+    mt_word = transliteration.convertToMachineTransliteration(word)
+    heb_word = ""
+    for i in range(len(mt_word)):
+        l = mt_word[i]
+        if l in roman_to_hebrew.final_chars and i == len(mt_word)-1:
+            l += '_'
+        heb_word += roman_to_hebrew.letter_dict[l]
+    return heb_word
+
 def run(rom_word):
     print("\nYou entered: " + rom_word)
-    word = transliteration.convertToMachineTransliteration(rom_word)
-    print(word)
+    word = transliterate_word(rom_word)
     wordsList = edit_distance.getClosestWords(word.strip(), freqList)
-    print(wordsList)
     print("The best word is " + wordsList[0][0] )
     # + ", which means " + hebrewToEnglish(wordsList[0][0]))
     print("Other possibilities include: ")
