@@ -5,6 +5,13 @@ import transliteration
 import edit_distance
 import roman_to_hebrew
 
+import tensorflow as tf
+from tensorflow.keras.layers.experimental import preprocessing
+
+import tensorflow_text as tf_text
+
+print(tf.__version__)
+
 # Function to create a list of tuples of words and frequencies based on a corpus
 # Said list is sorted in descending order by the frequencies
 def createOrderedWordFrequencyList(file):
@@ -36,16 +43,21 @@ def transliterate_word(word):
         heb_word += roman_to_hebrew.letter_dict[l]
     return heb_word
 
+model = tf.saved_model.load('translator')
 def run(rom_word):
     print("\nYou entered: " + rom_word)
     word = transliterate_word(rom_word)
     wordsList = edit_distance.getClosestWords(word.strip(), freqList)
-    print("The best word is " + wordsList[0][0] )
-    # + ", which means " + hebrewToEnglish(wordsList[0][0]))
+    print("The best word is " + wordsList[0][0] + ", which means " + getTranslation(wordsList[0][0]))
     print("Other possibilities include: ")
     for i in range(len(wordsList)-1):
-        print(wordsList[i + 1] )
-        # + translation.hebrewToEnglish(wordsList[i + 1][0]))
+        print(wordsList[i + 1][0] + " which means " + getTranslation(wordsList[i+1][0]))
+
+
+def getTranslation(heb_word):
+    phrase = tf.constant([heb_word])
+    translated = model.tf_translate(phrase)
+    return translated['text'][0].numpy().decode()
 
 def collectAccuracies(outputFile):
     
