@@ -82,8 +82,8 @@ def getClosestWords(word, freqList):
         current = freqList[i][0]
         editDistance = damerauLevenshtein(word,current, similarity=False)
 
-        if editDistance < 5:
-            print(word,current)
+        # if editDistance < 5:
+        #     print(word,current)
         
         # Check if word is the best one and should go at front of list
         if editDistance < currentBestDistance:
@@ -114,7 +114,7 @@ def getClosestWords(word, freqList):
             
     return wordsList
 
-print(damerauLevenshtein("Hello", "Hello", similarity=False))
+# print(damerauLevenshtein("Hello", "Hello", similarity=False))
 
 # freqList = createOrderedWordFrequencyList("dummy_file.txt")
 # while(True):

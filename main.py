@@ -15,7 +15,6 @@ def createOrderedWordFrequencyList(file):
         if int(line[1]) != 1: # only add if it occurs more than once
             freqList.append([line[2].strip('\n'), int(line[1])])
 
-
     freqList = sorted(freqList, key=lambda item: (item[1]), reverse=True)
     file.close()
     return freqList
@@ -50,12 +49,22 @@ def run(rom_word):
 
 def collectAccuracies(outputFile):
     
+    print("Enter q to quit")
     file = open(outputFile, "a") # Important to append rather than overwrite
     while(True):
         word = input("Enter your Hebrew word: ")
+        if word == "q":
+            file.close()
+            break
         run(word)
         wasTheFirstWordRight = input("Enter 1 if the first word provided was right, and 0 otherwise: ")
+        if wasTheFirstWordRight == "q":
+            file.close()
+            break
         wasTheWordInList = input("Enter 1 if the word was in the list (including the first word) and 0 otherwise: ")
+        if wasTheWordInList == "q":
+            file.close()
+            break
         file.write(word + "," + wasTheFirstWordRight + "," + wasTheWordInList)
 
 def runNormal():
