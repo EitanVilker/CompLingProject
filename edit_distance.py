@@ -117,7 +117,10 @@ def getClosestWords(word, freqList, usingCustomEditDistance):
 
         if usingCustomEditDistance:
             editDistanceTable = createEmptyDynamicTable(len(word), len(current))
-            editDistance = customEditDistance(word, current, len(word)-1, len(current)-1, editDistanceTable, lookup)
+            editDistance = customEditDistance(word, current, len(word), len(current), editDistanceTable, lookup)
+            if current == "ולח":
+                print(editDistance)
+
         else:
             editDistance = damerauLevenshtein(word,current, similarity=False)
 
@@ -154,11 +157,12 @@ def getClosestWords(word, freqList, usingCustomEditDistance):
 
 # Driver code
 
-str1 = "םכלכמכ"
-str2 = "קלכ"
-
+str1 = "ולח"
+str1 = str1[::-1]
+str2 = "בלח"
+str2 = str2[::-1]
 lookup = createDoubleLetterLookup()
 dp = createEmptyDynamicTable(len(str1), len(str2))
 
 # expect 3.25
-# print(customEditDistance(str1, str2, len(str1), len(str2), dp, lookup))
+print(customEditDistance(str1, str2, len(str1), len(str2), dp, lookup))
