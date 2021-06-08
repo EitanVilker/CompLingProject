@@ -46,18 +46,18 @@ def transliterate_word(word):
 def run(rom_word, customEditDistance):
     print("\nYou entered: " + rom_word)
     word = transliterate_word(rom_word)
-    print(word)
+    print("We transliterated this to: " + word)
     wordsList = edit_distance.getClosestWords(word, freqList, customEditDistance)
-    print("The best word is " + wordsList[0][0] + " with edit distance " + str(wordsList[0][1])) 
+    print("The best word is " + wordsList[0][0][::-1] + " with edit distance " + str(wordsList[0][1])) 
     print("This could mean: " + write_translations(wordsList[0][0]))
     print("Other possibilities include: ")
     for i in range(len(wordsList)-1):
-        print(wordsList[i + 1][0] + " which could mean: " + write_translations(wordsList[i+1][0]))
-    return wordsList[0][0]
+        print(wordsList[i + 1][0][::-1] + " which could mean: " + write_translations(wordsList[i+1][0]))
+    return wordsList[0][0][::-1]
 
 def write_translations(word):
     string = ""
-    words = translation.translate(str(word))
+    words = translation.translate(word)
     for i in range(len(words)):
         string += words[i]
         if i != len(words)-1:

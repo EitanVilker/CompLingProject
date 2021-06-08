@@ -64,6 +64,6 @@ def translate(hebrew):
     word = hebrew
     if word in common_words:
         return([common_words[word]])
-    if word not in dictionary or dictionary[word] == []:
+    elif word not in dictionary or dictionary[word] == []:
         return(["we are unable to translate this word"])
     else: return dictionary[word]

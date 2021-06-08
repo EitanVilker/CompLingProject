@@ -37,7 +37,7 @@ def createDoubleLetterLookup():
     lookup["ר"] = ["NDL"]
     lookup["ץ"] = ["NDL"]
     lookup["ם"] = ["NDL"]
-    lookup["ך"] = ["כ"]
+    lookup["ך"] = ["כ", "ח"]
     
     return lookup
 
@@ -103,6 +103,8 @@ def customEditDistance(word1, word2, length1, length2, editDistanceTable, lookup
 # Function to get the closest word based on its frequency and its edit distance
 def getClosestWords(word, freqList, usingCustomEditDistance):
 
+    word = word[::-1]
+
     currentBestDistance = sys.maxsize
     lastWordDistance = sys.maxsize
     wordsList = []
@@ -121,6 +123,7 @@ def getClosestWords(word, freqList, usingCustomEditDistance):
 
         # Check if word is the best one and should go at front of list
         if editDistance < currentBestDistance:
+            print("New best word is: " + current)
             currentBestDistance = editDistance
             wordsList.insert(0, [current, editDistance])
             if len(wordsList) > 10:
@@ -133,6 +136,7 @@ def getClosestWords(word, freqList, usingCustomEditDistance):
                     wordsList.insert(i, [current, editDistance])
                     if len(wordsList) > 10:
                         wordsList.pop(10)
+                    break
         
         # If list has less than ten entries, add word to appropriate spot in list
         elif len(wordsList) < 10:
