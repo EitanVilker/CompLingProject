@@ -42,7 +42,7 @@ def createDoubleLetterLookup():
     return lookup
 
 def createEmptyDynamicTable(length1, length2):
-    dp = [[-1 for i in range(length1 + 1)] for j in range(length2 + 1)]
+    dp = [[-1 for i in range(length2 + 1)] for j in range(length1 + 1)]
     return dp
 
 def customEditDistance(word1, word2, length1, length2, editDistanceTable, lookup):
@@ -52,9 +52,9 @@ def customEditDistance(word1, word2, length1, length2, editDistanceTable, lookup
     if length2 == 0:
         return length1
 
-    if editDistanceTable[n][m] != -1:
-        return editDistanceTable[n][m]
-    
+    if editDistanceTable[length1][length2] != -1:
+        return editDistanceTable[length1][length2]
+
     # If letters are equal
     if word1[length1 - 1] == word2[length2 - 1]:
         if editDistanceTable[length1 - 1][length2 - 1] == -1:
@@ -63,7 +63,7 @@ def customEditDistance(word1, word2, length1, length2, editDistanceTable, lookup
         
         editDistanceTable[length1][length2] = editDistanceTable[length1 - 1][length2 - 1]
         return editDistanceTable[length1][length2]
-    
+
     # If letters aren't equal, find cost of insertion, deletion, and replacement
     
     costInsertion = 0
@@ -83,17 +83,18 @@ def customEditDistance(word1, word2, length1, length2, editDistanceTable, lookup
         costInsertion = customEditDistance(word1, word2, length1, length2 - 1, editDistanceTable, lookup)
 
     # Replacement
-    possibleDoubles = lookup[word2[length2 - 1]]
+    possibleDoubles = lookup[word1[length1 - 1]]
     if editDistanceTable[length1 - 1][length2 - 1] != -1:
         costReplacement = editDistanceTable[length1 - 1][length2 - 1]
         for i in possibleDoubles:
-            if word1[length1 - 1] == i:
+            if word1[length2 - 1] == i:
                 costReplacement -= .75
     else:
         costReplacement = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable, lookup)
         for i in possibleDoubles:
             if word1[length1 - 1] == i:
                 costReplacement -= .75
+
     editDistanceTable[length1][length2] = 1 + min(costDeletion, min(costInsertion, costReplacement))
     
     return editDistanceTable[length1][length2]
@@ -114,7 +115,7 @@ def getClosestWords(word, freqList, usingCustomEditDistance):
 
         if usingCustomEditDistance:
             editDistanceTable = createEmptyDynamicTable(len(word), len(current))
-            editDistance = customEditDistance(word, current, len(word), len(current), editDistanceTable, lookup)
+            editDistance = customEditDistance(word, current, len(word)-1, len(current)-1, editDistanceTable, lookup)
         else:
             editDistance = damerauLevenshtein(word,current, similarity=False)
 
@@ -150,9 +151,9 @@ def getClosestWords(word, freqList, usingCustomEditDistance):
 # Driver code
 
 str1 = "כלכככ"
-str2 = "קקקלק"
+str2 = "קלכככ"
 
 lookup = createDoubleLetterLookup()
 dp = createEmptyDynamicTable(len(str1), len(str2))
-              
-print(customEditDistance(str1, str2, n, m, dp, lookup))
+
+print(customEditDistance(str1, str2, len(str1), len(str2), dp, lookup))
