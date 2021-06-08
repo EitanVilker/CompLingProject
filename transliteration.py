@@ -173,6 +173,9 @@ def convertToMachineTransliteration(word):
                 if word[i + 1] == "o":
                     new_word += "w"
                     skip = True
+                else:
+                    new_word += "w"
+
             else:
                 new_word += "w"
         
