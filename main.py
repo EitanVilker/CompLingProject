@@ -10,7 +10,7 @@ from tensorflow.keras.layers.experimental import preprocessing
 
 import tensorflow_text as tf_text
 
-print(tf.__version__)
+# print(tf.__version__)
 
 # Function to create a list of tuples of words and frequencies based on a corpus
 # Said list is sorted in descending order by the frequencies
@@ -43,15 +43,16 @@ def transliterate_word(word):
         heb_word += roman_to_hebrew.letter_dict[l]
     return heb_word
 
-model = tf.saved_model.load('translator')
-def run(rom_word):
+# model = tf.saved_model.load('translator')
+def run(rom_word, customEditDistance):
     print("\nYou entered: " + rom_word)
     word = transliterate_word(rom_word)
-    wordsList = edit_distance.getClosestWords(word.strip(), freqList)
-    print("The best word is " + wordsList[0][0] + ", which means " + getTranslation(wordsList[0][0]))
-    print("Other possibilities include: ")
-    for i in range(len(wordsList)-1):
-        print(wordsList[i + 1][0] + " which means " + getTranslation(wordsList[i+1][0]))
+    wordsList = edit_distance.getClosestWords(word.strip(), freqList, customEditDistance)
+    # print("The best word is " + wordsList[0][0] + ", which means " + getTranslation(wordsList[0][0]))
+    # print("Other possibilities include: ")
+    # for i in range(len(wordsList)-1):
+    #     print(wordsList[i + 1][0] + " which means " + getTranslation(wordsList[i+1][0]))
+    return wordsList[0][0]
 
 
 def getTranslation(heb_word):
@@ -59,7 +60,7 @@ def getTranslation(heb_word):
     translated = model.tf_translate(phrase)
     return translated['text'][0].numpy().decode()
 
-def collectAccuracies(outputFile):
+def collectAccuracies(outputFile, usingCustomEditDistance):
     
     print("Enter q to quit")
     file = open(outputFile, "a") # Important to append rather than overwrite
@@ -68,7 +69,7 @@ def collectAccuracies(outputFile):
         if word == "q":
             file.close()
             break
-        run(word)
+        run(word, usingCustomEditDistance)
         wasTheFirstWordRight = input("Enter 1 if the first word provided was right, and 0 otherwise: ")
         if wasTheFirstWordRight == "q":
             file.close()
@@ -79,13 +80,31 @@ def collectAccuracies(outputFile):
             break
         file.write(word + "," + wasTheFirstWordRight + "," + wasTheWordInList + "\n")
 
-def runNormal():
+def automaticallyCollectAccuracies(inputFile, usingCustomEditDistance):
+
+    correct = 0
+    incorrect = 0
+
+    file = open(inputFile, "r", encoding="utf8")
+    for line in file:
+        line = line.split(",")
+        word = run(line[0], usingCustomEditDistance)
+        print(line[1])
+        if word == line[1]:
+            correct  += 1
+        else:
+            incorrect += 1
+    return correct / (correct + incorrect)
+
+def runNormal(customEditDistance):
     while(True):
         word = input("Enter your Hebrew word: ")
-        run(word)
+        run(word, customEditDistance)
 
 freqList = createOrderedWordFrequencyList("occurrences.csv")
+lookup = edit_distance.createDoubleLetterLookup()
+usingCustomEditDistance = True
 
-# runNormal()
-
-collectAccuracies("outputFile.csv")
+# collectAccuracies("outputFile.csv", usingCustomEditDistance)
+# print(automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance))
+runNormal(usingCustomEditDistance)

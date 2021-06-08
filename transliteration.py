@@ -13,8 +13,10 @@
 # v -> ט
 # i -> י
 # k -> כ
+# k (final) -> ך‎
 # l -> ל
 # m -> מ
+# m (final) -> ם‎
 # n -> נ
 # n (final) -> ן
 # s -> ס
@@ -22,6 +24,7 @@
 # p -> פ
 # p (final) -> ף
 # c -> צ
+# c (final) -> ץ
 # q -> ק
 # r -> ר
 # e -> ש
@@ -36,7 +39,7 @@ def convertToMachineTransliteration(word):
     if_statment_fixer = True
     
     for i in range(len(word)):
-        
+
         if word[i] == "s":
             if skip:
                 skip = False
@@ -95,7 +98,10 @@ def convertToMachineTransliteration(word):
             new_word += "w"
         
         elif word[i] == "z":
-            new_word += "z"
+            if skip:
+                skip = False
+            else:
+                new_word += "z"
         
         elif word[i] == "t":
             if skip:
@@ -103,6 +109,9 @@ def convertToMachineTransliteration(word):
             elif i < len(word) - 1:
                 if word[i + 1] == "t":
                     new_word += "t"
+                    skip = True
+                elif word[i + 1] == "s" or word[i + 1] == "z":
+                    new_word += "c"
                     skip = True
                 else:
                     new_word += "t"

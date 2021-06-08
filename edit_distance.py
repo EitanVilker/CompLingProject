@@ -8,7 +8,44 @@
 from fastDamerauLevenshtein import damerauLevenshtein
 import sys
 
-def customEditDistance(word1, word2, length1, length2, editDistanceTable):
+def createDoubleLetterLookup():
+
+    lookup = {}
+    lookup["כ"] = ["ק","ח"]
+    lookup["ק"] = ["כ"]
+    lookup["א"] = ["ע"]
+    lookup["ע"] = ["א"]
+    lookup["ש"] = ["ס"]
+    lookup["ס"] = ["ש"]
+    lookup["ת"] = ["ט"]
+    lookup["ט"] = ["ת"]
+    lookup["ו"] = ["ב"]
+    lookup["ב"] = ["ו"]
+    lookup["ג"] = ["NDL"]
+    lookup["ד"] = ["NDL"]
+    lookup["ה"] = ["NDL"]
+    lookup["ז"] = ["NDL"]
+    lookup["ח"] = ["ך‎‎", "כ"]
+    lookup["י"] = ["NDL"]
+    lookup["ל"] = ["NDL"]
+    lookup["מ"] = ["NDL"]
+    lookup["נ"] = ["NDL"]
+    lookup["ן"] = ["NDL"]
+    lookup["פ"] = ["NDL"]
+    lookup["ף"] = ["NDL"]
+    lookup["צ"] = ["NDL"]
+    lookup["ר"] = ["NDL"]
+    lookup["ץ"] = ["NDL"]
+    lookup["ם‎"] = ["NDL"]
+    lookup["ך‎‎"] = ["כ"]
+    
+    return lookup
+
+def createEmptyDynamicTable(length1, length2):
+    dp = [[-1 for i in range(length1 + 1)] for j in range(length2 + 1)]
+    return dp
+
+def customEditDistance(word1, word2, length1, length2, editDistanceTable, lookup):
 
     if length1 == 0:
         return length2
@@ -21,7 +58,7 @@ def customEditDistance(word1, word2, length1, length2, editDistanceTable):
     # If letters are equal
     if word1[length1 - 1] == word2[length2 - 1]:
         if editDistanceTable[length1 - 1][length2 - 1] == -1:
-            editDistanceTable[length1][length2] = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable)
+            editDistanceTable[length1][length2] = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable, lookup)
             return editDistanceTable[length1][length2]
         
         editDistanceTable[length1][length2] = editDistanceTable[length1 - 1][length2 - 1]
@@ -37,54 +74,50 @@ def customEditDistance(word1, word2, length1, length2, editDistanceTable):
     if editDistanceTable[length1 - 1][length2] != -1:
         costDeletion = editDistanceTable[length1 - 1][length2]
     else:
-        costDeletion = customEditDistance(word1, word2, length1 - 1, length2, editDistanceTable)
+        costDeletion = customEditDistance(word1, word2, length1 - 1, length2, editDistanceTable, lookup)
 
     # Insertion
     if editDistanceTable[length1][length2 - 1] != -1:
         costInsertion = editDistanceTable[length1][length2 - 1]
     else:
-        costInsertion = customEditDistance(word1, word2, length1, length2 - 1, editDistanceTable)
+        costInsertion = customEditDistance(word1, word2, length1, length2 - 1, editDistanceTable, lookup)
 
     # Replacement
+    possibleDoubles = lookup[word2[length2 - 1]]
     if editDistanceTable[length1 - 1][length2 - 1] != -1:
         costReplacement = editDistanceTable[length1 - 1][length2 - 1]
+        for i in possibleDoubles:
+            if word1[length1 - 1] == i:
+                costReplacement -= .75
     else:
-        costReplacement = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable)
-
+        costReplacement = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable, lookup)
+        for i in possibleDoubles:
+            if word1[length1 - 1] == i:
+                costReplacement -= .75
     editDistanceTable[length1][length2] = 1 + min(costDeletion, min(costInsertion, costReplacement))
     
     return editDistanceTable[length1][length2]
 
-# # Function to create a list of tuples of words and frequencies based on a corpus
-# # Said list is sorted in descending order by the frequencies
-# def createOrderedWordFrequencyList(file):
-#     freqList = []
-#     file = open(file, "r")
-#     for line in file:
-#         line = line.split()
-#         freqList.append([line[0], line[1]])
-    
-#     freqList = sorted(freqList, key=lambda item: (item[1]), reverse=True)
-#     print(freqList)
-#     file.close()
-
-#     return freqList
 
 # Function to get the closest word based on its frequency and its edit distance
-def getClosestWords(word, freqList):
+def getClosestWords(word, freqList, usingCustomEditDistance):
 
     currentBestDistance = sys.maxsize
     lastWordDistance = sys.maxsize
     wordsList = []
     editDistance = 0
+    lookup = createDoubleLetterLookup()
     
     for i in range(len(freqList)):
-        current = freqList[i][0]
-        editDistance = damerauLevenshtein(word,current, similarity=False)
 
-        # if editDistance < 5:
-        #     print(word,current)
-        
+        current = freqList[i][0]
+
+        if usingCustomEditDistance:
+            editDistanceTable = createEmptyDynamicTable(len(word), len(current))
+            editDistance = customEditDistance(word, current, len(word), len(current), editDistanceTable, lookup)
+        else:
+            editDistance = damerauLevenshtein(word,current, similarity=False)
+
         # Check if word is the best one and should go at front of list
         if editDistance < currentBestDistance:
             currentBestDistance = editDistance
@@ -114,10 +147,12 @@ def getClosestWords(word, freqList):
             
     return wordsList
 
-# print(damerauLevenshtein("Hello", "Hello", similarity=False))
+# Driver code
 
-# freqList = createOrderedWordFrequencyList("dummy_file.txt")
-# while(True):
-#     word = input("Enter your Hebrew word: ")
-#     print("\nYou entered: " + word)
-#     print("This was converted to: " + getClosestWord(word, freqList))
+str1 = "כלכככ"
+str2 = "קקקלק"
+
+lookup = createDoubleLetterLookup()
+dp = createEmptyDynamicTable(len(str1), len(str2))
+              
+print(customEditDistance(str1, str2, n, m, dp, lookup))
