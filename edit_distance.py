@@ -25,7 +25,7 @@ def createDoubleLetterLookup():
     lookup["ד"] = ["NDL"]
     lookup["ה"] = ["NDL"]
     lookup["ז"] = ["NDL"]
-    lookup["ח"] = ["ך‎‎", "כ"]
+    lookup["ח"] = ["ך", "כ"]
     lookup["י"] = ["NDL"]
     lookup["ל"] = ["NDL"]
     lookup["מ"] = ["NDL"]
@@ -36,8 +36,8 @@ def createDoubleLetterLookup():
     lookup["צ"] = ["NDL"]
     lookup["ר"] = ["NDL"]
     lookup["ץ"] = ["NDL"]
-    lookup["ם‎"] = ["NDL"]
-    lookup["ך‎‎"] = ["כ"]
+    lookup["ם"] = ["NDL"]
+    lookup["ך"] = ["כ"]
     
     return lookup
 
@@ -87,12 +87,12 @@ def customEditDistance(word1, word2, length1, length2, editDistanceTable, lookup
     if editDistanceTable[length1 - 1][length2 - 1] != -1:
         costReplacement = editDistanceTable[length1 - 1][length2 - 1]
         for i in possibleDoubles:
-            if word1[length2 - 1] == i:
+            if word2[length2 - 1] == i:
                 costReplacement -= .75
     else:
         costReplacement = customEditDistance(word1, word2, length1 - 1, length2 - 1, editDistanceTable, lookup)
         for i in possibleDoubles:
-            if word1[length1 - 1] == i:
+            if word2[length2 - 1] == i:
                 costReplacement -= .75
 
     editDistanceTable[length1][length2] = 1 + min(costDeletion, min(costInsertion, costReplacement))
@@ -150,10 +150,11 @@ def getClosestWords(word, freqList, usingCustomEditDistance):
 
 # Driver code
 
-str1 = "כלכככ"
-str2 = "קלכככ"
+str1 = "םכלכמכ"
+str2 = "קלכ"
 
 lookup = createDoubleLetterLookup()
 dp = createEmptyDynamicTable(len(str1), len(str2))
 
-print(customEditDistance(str1, str2, len(str1), len(str2), dp, lookup))
+# expect 3.25
+# print(customEditDistance(str1, str2, len(str1), len(str2), dp, lookup))

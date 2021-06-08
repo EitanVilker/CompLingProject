@@ -40,15 +40,17 @@ def transliterate_word(word):
         l = mt_word[i]
         if l in roman_to_hebrew.final_chars and i == len(mt_word)-1:
             l += '_'
-        heb_word += roman_to_hebrew.letter_dict[l]
+        heb_word = roman_to_hebrew.letter_dict[l] + heb_word
     return heb_word
 
 # model = tf.saved_model.load('translator')
 def run(rom_word, customEditDistance):
     print("\nYou entered: " + rom_word)
     word = transliterate_word(rom_word)
-    wordsList = edit_distance.getClosestWords(word.strip(), freqList, customEditDistance)
-    # print("The best word is " + wordsList[0][0] + ", which means " + getTranslation(wordsList[0][0]))
+    print(word)
+    wordsList = edit_distance.getClosestWords(word, freqList, customEditDistance)
+    print("The best word is " + wordsList[0][0] + " with edit distance " + str(wordsList[0][1])) 
+    # + ", which means " + getTranslation(wordsList[0][0]))
     # print("Other possibilities include: ")
     # for i in range(len(wordsList)-1):
     #     print(wordsList[i + 1][0] + " which means " + getTranslation(wordsList[i+1][0]))
@@ -103,7 +105,7 @@ def runNormal(customEditDistance):
 
 freqList = createOrderedWordFrequencyList("occurrences.csv")
 lookup = edit_distance.createDoubleLetterLookup()
-usingCustomEditDistance = True
+usingCustomEditDistance = False
 
 # collectAccuracies("outputFile.csv", usingCustomEditDistance)
 # print(automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance))
