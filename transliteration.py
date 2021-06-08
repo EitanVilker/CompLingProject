@@ -209,8 +209,11 @@ def convertToMachineTransliteration(word):
                 new_word += "a"
             elif i == len(word) - 1:
                 new_word += "h"
-            elif word[i + 1] == "e" or word[i + 1] == "a":
+            elif word[i + 1] == "a":
                 new_word += "a"
+                skip = True
+            elif word[i + 1] == "e":
+                new_word += "i"
                 skip = True
         
         else:
