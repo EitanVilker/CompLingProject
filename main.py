@@ -4,11 +4,11 @@
 import transliteration
 import edit_distance
 import roman_to_hebrew
+import translation
+# import tensorflow as tf
+# from tensorflow.keras.layers.experimental import preprocessing
 
-import tensorflow as tf
-from tensorflow.keras.layers.experimental import preprocessing
-
-import tensorflow_text as tf_text
+# import tensorflow_text as tf_text
 
 # print(tf.__version__)
 
@@ -43,25 +43,26 @@ def transliterate_word(word):
         heb_word = roman_to_hebrew.letter_dict[l] + heb_word
     return heb_word
 
-# model = tf.saved_model.load('translator')
 def run(rom_word, customEditDistance):
     print("\nYou entered: " + rom_word)
     word = transliterate_word(rom_word)
     print("We transliterated this to: " + word)
     wordsList = edit_distance.getClosestWords(word, freqList, customEditDistance)
-    print("The best word is " + wordsList[0][0][::-1])
-    # ", which means " + getTranslation(wordsList[0][0]))
+    print("The best word is " + wordsList[0][0][::-1] + " with edit distance " + str(wordsList[0][1])) 
+    print("This could mean: " + write_translations(wordsList[0][0]))
     print("Other possibilities include: ")
     for i in range(len(wordsList)-1):
-        print(wordsList[i + 1][0][::-1])
-        # + " which means " + getTranslation(wordsList[i+1][0]))
-    return wordsList
+        print(wordsList[i + 1][0][::-1] + " which could mean: " + write_translations(wordsList[i+1][0]))
+    return wordsList[0][0][::-1]
 
-
-def getTranslation(heb_word):
-    phrase = tf.constant([heb_word])
-    translated = model.tf_translate(phrase)
-    return translated['text'][0].numpy().decode()
+def write_translations(word):
+    string = ""
+    words = translation.translate(word)
+    for i in range(len(words)):
+        string += words[i]
+        if i != len(words)-1:
+            string += ' or '
+    return string
 
 def collectAccuracies(outputFile, usingCustomEditDistance):
     
@@ -125,9 +126,9 @@ freqList = createOrderedWordFrequencyList("occurrences.csv")
 lookup = edit_distance.createDoubleLetterLookup()
 usingCustomEditDistance = True
 
-# collectAccuracies("outputFile.csv", usingCustomEditDistance)
-acc0, acc1 = automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance)
-print("Accuracy of best word: " + str(acc0))
-print("Accuracy of word in list: " + str(acc1))
+collectAccuracies("outputFile.csv", usingCustomEditDistance)
+# acc0, acc1 = automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance)
+# print("Accuracy of best word: " + str(acc0))
+# print("Accuracy of word in list: " + str(acc1))
 
 # runNormal(usingCustomEditDistance)

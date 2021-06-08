@@ -4,27 +4,66 @@
 import csv
 import re
 
+# Special cases, manually input to dictionary. Increasing this would make this a better translation dictionary
+common_words = {'שלנו': 'our', 'אנחנו': 'we', 'היא': 'she', 'אותי': 'me', 'זה': 'it', 'ו': 'and', 'של': 'of',
+        'אתה': 'you', 'אותך': 'you', 'שלך': 'your', 'הוא': 'he', 'אל': 'to', 'שלי': 'my', 'היה': 'was', 'ב': 'in',
+        'הוא': 'is', 'אני': 'i', 'איך': 'how', 'הם': 'they', 'הן': 'they', 'ל': 'of',
+        'את': 'et, which has no translation but denotes a direct object'}
+names = ['john', 'mary', 'tom']
+articles = ['the', 'a', 'an', "i'm", "how's", 'are']
+phrase_dictionary = {}
 dictionary = {}
 
 ## generate a dictionary of all hebrew words & phrases with them in it
-with open('heb_eng.csv', 'r') as heb_eng:
+with open('heb_eng.csv', 'r', encoding="utf8") as heb_eng:
     reader = csv.reader(heb_eng)
     for row in reader:
         # split and clean into words
         eng = row[0].strip('.,?!"')
         heb = row[1].strip('.,?!"').split()
-        phrase = re.sub('",', eng)
+        phrase = re.sub('",', '', eng)
         for word in heb:
-            word = re.sub('",', word)
-            if word in dictionary.keys:
-                dictionary[word].append(phrase)
+            word = re.sub(r'[",]*', '', word)
+            if word in phrase_dictionary.keys():
+                phrase_dictionary[word].append(phrase)
             else:
                 # a list of phrases
-                dictionary[word] = [phrase]
-            
-        
+                phrase_dictionary[word] = [phrase]
+
+# get words associated with each individual Hebrew word
+for key, phrases in phrase_dictionary.items():
+    if key in common_words:
+        continue
+    words_freq = {}
+    possible_translations = []
+    all_words = []
+    for phrase in phrases:
+        english = phrase.lower().split()
+        all_words.extend(english)
+    for word in all_words:
+        # ignore some words
+        word = word.strip()
+        if word in names or word in articles or word in common_words.values():
+            continue
+        if word in words_freq:
+            words_freq[word] += 1
+        else: 
+            words_freq[word] = 1
+    # add highest 5 words, if there is more than 2 options, should show up at least 10 times
+    for word in sorted(words_freq, key=words_freq.get, reverse=True):
+        if len(possible_translations) >= 2 and len(possible_translations) <= 5:
+            if words_freq[word] >= 10:
+                possible_translations.append(word)
+        if len(possible_translations) < 2:
+            possible_translations.append(word)
+    dictionary[key] = possible_translations
 
 ## Input: a Hebrew word in Hebrew characters
-## Output: an English word or list of words that could be 
+## Output: an list of English words that it could mean
 def translate(hebrew):
-    return('english')
+    word = hebrew
+    if word in common_words:
+        return([common_words[word]])
+    elif word not in dictionary or dictionary[word] == []:
+        return(["we are unable to translate this word"])
+    else: return dictionary[word]
