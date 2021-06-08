@@ -2,7 +2,13 @@
 
 ### How to Run
 
-If you download this whole project, you can simply run ./main.py or python main.py. You will then be prompted to enter Hebrew words in English letters.
+To install DamerauLevenshtein, on Windows run `pip install fastDamerauLevenshtein` and on Mac/Linux run `pip3 install fastDamerauLevenshtein`
+
+To install TensorFlow, on Windows run `pip install tensorflow` and on Mac/Linux run `pip3 install tensorflow`
+
+To install TensorFlow Text, on Windows run `pip install -q tensorflow-text` and on Mac/Linux run `pip3 install -q tensorflow-text`
+
+If you download this whole project, you can simply run `./main.py` or `python3 main.py`. You will then be prompted to enter Hebrew words in English letters.
 
 ### Idea
 
