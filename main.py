@@ -90,6 +90,8 @@ def automaticallyCollectAccuracies(inputFile, usingCustomEditDistance):
     incorrect0 = 0
     correct1 = 0
     incorrect1 = 0
+    correct2 = 0
+    incorrect2 = 0
 
     file = open(inputFile, "r", encoding="utf8")
     for line in file:
@@ -115,7 +117,16 @@ def automaticallyCollectAccuracies(inputFile, usingCustomEditDistance):
         else:
             incorrect1 += 1
 
-    return correct0 / (correct0 + incorrect0), correct1 / (correct1 + incorrect1)
+        # Collect accuracy of word without edit distance
+        print(word)
+        transliteratedWord = transliterate_word(word)
+        if transliteratedWord == target:
+            correct2 += 1
+            print("got one")
+        else:
+            incorrect2 += 1
+
+    return correct0 / (correct0 + incorrect0), correct1 / (correct1 + incorrect1), correct2 / (correct2 + incorrect2)
 
 def runNormal(customEditDistance):
     while(True):
@@ -126,9 +137,9 @@ freqList = createOrderedWordFrequencyList("occurrences.csv")
 lookup = edit_distance.createDoubleLetterLookup()
 usingCustomEditDistance = True
 
-collectAccuracies("outputFile.csv", usingCustomEditDistance)
-# acc0, acc1 = automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance)
-# print("Accuracy of best word: " + str(acc0))
-# print("Accuracy of word in list: " + str(acc1))
+# collectAccuracies("outputFile.csv", usingCustomEditDistance)
+acc0, acc1 = automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance)
+print("Accuracy of best word: " + str(acc0))
+print("Accuracy of word in list: " + str(acc1))
 
 # runNormal(usingCustomEditDistance)
