@@ -5,12 +5,12 @@ import csv
 import re
 
 # Special cases, manually input to dictionary. Increasing this would make this a better translation dictionary
-common_words = {'שלנו': 'our', 'אנחנו': 'we', 'היא': 'she', 'אותי': 'me', 'זה': 'it', 'ו': 'and', 'של': 'of',
+common_words = {'שלנו': 'our', 'אנחנו': 'we', 'היא': 'she', 'אותי': 'me', 'זה': 'it', 'ו': 'and',
         'אתה': 'you', 'אותך': 'you', 'שלך': 'your', 'הוא': 'he', 'אל': 'to', 'שלי': 'my', 'היה': 'was', 'ב': 'in',
-        'הוא': 'is', 'אני': 'i', 'איך': 'how', 'הם': 'they', 'הן': 'they', 'ל': 'of',
+        'אני': 'i', 'איך': 'how', 'הם': 'they', 'הן': 'they', 'ל': 'of',
         'את': 'et, which has no translation but denotes a direct object'}
-names = ['john', 'mary', 'tom']
-articles = ['the', 'a', 'an', "i'm", "how's", 'are']
+names = ['john', 'mary', 'tom', "tom's", "mary's", "john's"]
+issue_words = ['the', 'a', 'an', "i'm", "how's", 'are', "i'll", 'be', 'is']
 phrase_dictionary = {}
 dictionary = {}
 
@@ -43,15 +43,15 @@ for key, phrases in phrase_dictionary.items():
     for word in all_words:
         # ignore some words
         word = word.strip()
-        if word in names or word in articles or word in common_words.values():
+        if word in names or word in issue_words or word in common_words.values():
             continue
         if word in words_freq:
             words_freq[word] += 1
         else: 
             words_freq[word] = 1
-    # add highest 5 words, if there is more than 2 options, should show up at least 10 times
+    # add highest 3 words, if there is more than 2 options, should show up at least 10 times
     for word in sorted(words_freq, key=words_freq.get, reverse=True):
-        if len(possible_translations) >= 2 and len(possible_translations) <= 5:
+        if len(possible_translations) == 2:
             if words_freq[word] >= 10:
                 possible_translations.append(word)
         if len(possible_translations) < 2:
