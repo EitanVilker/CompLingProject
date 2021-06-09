@@ -15,7 +15,7 @@ phrase_dictionary = {}
 dictionary = {}
 
 ## generate a dictionary of all hebrew words & phrases with them in it
-with open('heb_eng.csv', 'r') as heb_eng:
+with open('heb_eng.csv', 'r', encoding="utf8") as heb_eng:
     reader = csv.reader(heb_eng)
     for row in reader:
         # split and clean into words

@@ -86,19 +86,47 @@ def collectAccuracies(outputFile, usingCustomEditDistance):
 
 def automaticallyCollectAccuracies(inputFile, usingCustomEditDistance):
 
-    correct = 0
-    incorrect = 0
+    correct0 = 0
+    incorrect0 = 0
+    correct1 = 0
+    incorrect1 = 0
+    correct2 = 0
+    incorrect2 = 0
 
     file = open(inputFile, "r", encoding="utf8")
     for line in file:
         line = line.split(",")
-        word = run(line[0], usingCustomEditDistance)
-        print(line[1])
-        if word == line[1]:
-            correct  += 1
+        wordsList = run(line[0], usingCustomEditDistance)
+        target = line[1].strip()
+        target = target[::-1]
+        word = wordsList[0][0][::-1]
+
+        # Calculate accuracy of first word
+        if word == target:
+            correct0  += 1
         else:
-            incorrect += 1
-    return correct / (correct + incorrect)
+            incorrect0 += 1
+
+        # Calculate accuracy of word in list
+        wordFound = False
+        for i in wordsList:
+            if i[0][::-1] == target:
+                wordFound = True
+        if wordFound:
+            correct1 += 1
+        else:
+            incorrect1 += 1
+
+        # Collect accuracy of word without edit distance
+        print(word)
+        transliteratedWord = transliterate_word(word)
+        if transliteratedWord == target:
+            correct2 += 1
+            print("got one")
+        else:
+            incorrect2 += 1
+
+    return correct0 / (correct0 + incorrect0), correct1 / (correct1 + incorrect1), correct2 / (correct2 + incorrect2)
 
 def runNormal(customEditDistance):
     while(True):
@@ -107,8 +135,11 @@ def runNormal(customEditDistance):
 
 freqList = createOrderedWordFrequencyList("occurrences.csv")
 lookup = edit_distance.createDoubleLetterLookup()
-usingCustomEditDistance = False
+usingCustomEditDistance = True
 
 # collectAccuracies("outputFile.csv", usingCustomEditDistance)
-# print(automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance))
-runNormal(usingCustomEditDistance)
+acc0, acc1 = automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance)
+print("Accuracy of best word: " + str(acc0))
+print("Accuracy of word in list: " + str(acc1))
+
+# runNormal(usingCustomEditDistance)
