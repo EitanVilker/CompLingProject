@@ -53,7 +53,7 @@ def run(rom_word, customEditDistance):
     print("Other possibilities include: ")
     for i in range(len(wordsList)-1):
         print(wordsList[i + 1][0][::-1] + " which could mean: " + write_translations(wordsList[i+1][0]))
-    return wordsList[0][0][::-1]
+    return wordsList
 
 def write_translations(word):
     string = ""
@@ -118,11 +118,9 @@ def automaticallyCollectAccuracies(inputFile, usingCustomEditDistance):
             incorrect1 += 1
 
         # Collect accuracy of word without edit distance
-        print(word)
-        transliteratedWord = transliterate_word(word)
+        transliteratedWord = transliterate_word(line[0].strip())
         if transliteratedWord == target:
             correct2 += 1
-            print("got one")
         else:
             incorrect2 += 1
 
@@ -138,8 +136,9 @@ lookup = edit_distance.createDoubleLetterLookup()
 usingCustomEditDistance = True
 
 # collectAccuracies("outputFile.csv", usingCustomEditDistance)
-acc0, acc1 = automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance)
+acc0, acc1, acc2 = automaticallyCollectAccuracies("testing.csv", usingCustomEditDistance)
 print("Accuracy of best word: " + str(acc0))
 print("Accuracy of word in list: " + str(acc1))
+print("Accuracy without edit distance: " + str(acc2))
 
 # runNormal(usingCustomEditDistance)
